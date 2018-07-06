@@ -20,13 +20,16 @@ import {
 
 import Fuse from 'fuse.js'
 
-import cca2List from '../data/cca2'
 import { getHeightPercent } from './ratio'
 import CloseButton from './CloseButton'
 import countryPickerStyles from './CountryPicker.style'
 import KeyboardAvoidingView from './KeyboardAvoidingView'
 
+import { getAllIso2, getFlagImages } from '@bodhiveggie/countries';
+
 let countries = null
+let flagImages = null;
+let cca2List = getAllIso2();
 let Emoji = null
 let styles = {}
 
@@ -37,26 +40,31 @@ const FLAG_TYPES = {
   emoji: 'emoji'
 }
 
-const setCountries = flagType => {
+const loadCountries = flagType => {
   if (typeof flagType !== 'undefined') {
     isEmojiable = flagType === FLAG_TYPES.emoji
   }
 
-  if (isEmojiable) {
-    countries = require('../data/countries-emoji')
-    Emoji = require('./emoji').default
-  } else {
-    countries = require('../data/countries')
-    Emoji = <View />
-  }
+  Emoji = isEmojiable ? require('./emoji').default : <View />
+  flagImages = isEmojiable ? null : getFlagImages();
+  countriesData = require('@bodhiveggie/countries/resources/countries.json');
+  /**
+   * Convert [ { iso: "CO" } ] => { CO: {} }
+   */
+  countries = {};
+  countriesData.forEach(function (co) {
+    co.cca2 = co.iso2;
+    countries[co.cca2.toUpperCase()] = co;
+  });
+
 }
+
+loadCountries();
 
 const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
 
-setCountries()
-
 export const getAllCountries = () =>
-  cca2List.map(cca2 => ({ ...countries[cca2], cca2 }))
+  cca2List.map(cca2 => countries[cca2])
 
 export default class CountryPicker extends Component {
   static propTypes = {
@@ -96,20 +104,22 @@ export default class CountryPicker extends Component {
   }
 
   static renderEmojiFlag(cca2, emojiStyle) {
+    const flag = 'flag-' + cca2.toLowerCase();
     return (
       <Text style={[styles.emojiFlag, emojiStyle]} allowFontScaling={false}>
         {cca2 !== '' && countries[cca2.toUpperCase()] ? (
-          <Emoji name={countries[cca2.toUpperCase()].flag} />
+          <Emoji name={flag} />
         ) : null}
       </Text>
     )
   }
 
   static renderImageFlag(cca2, imageStyle) {
+    const flag = flagImages[cca2.toUpperCase()];
     return cca2 !== '' ? (
       <Image
         style={[styles.imgStyle, imageStyle]}
-        source={{ uri: countries[cca2].flag }}
+        source={flag}
       />
     ) : null
   }
@@ -128,7 +138,7 @@ export default class CountryPicker extends Component {
     super(props)
     this.openModal = this.openModal.bind(this)
 
-    setCountries(props.flagType)
+    loadCountries(props.flagType)
     let countryList = [...props.countryList]
     const excludeCountries = [...props.excludeCountries]
 
@@ -228,8 +238,7 @@ export default class CountryPicker extends Component {
   }
 
   getCountryName(country, optionalTranslation) {
-    const translation = optionalTranslation || this.props.translation || 'eng'
-    return country.name[translation] || country.name.common
+    return country.name;
   }
 
   setVisibleListHeight(offset) {
@@ -254,7 +263,7 @@ export default class CountryPicker extends Component {
 
   // dimensions of country list and window
   itemHeight = getHeightPercent(7)
-  listHeight = countries.length * this.itemHeight
+  listHeight = Object.keys(countries).length * this.itemHeight
 
   openModal() {
     this.setState({ modalVisible: true })
