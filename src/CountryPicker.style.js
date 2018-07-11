@@ -19,10 +19,11 @@ export default StyleSheet.create({
   },
   input: {
     height: 48,
-    width: '70%'
+    width: '100%'
   },
   inputOnly: {
-    marginLeft: '15%'
+    //marginLeft: '15%'
+    margin: 0
   },
   touchFlag: {
     alignItems: 'center',
@@ -61,10 +62,10 @@ export default StyleSheet.create({
   },
   itemCountryName: {
     justifyContent: 'center',
-    width: '70%',
+    width: '100%',
     borderBottomWidth: 2 / PixelRatio.get(),
     borderBottomColor: '#ccc',
-    height: 20
+    //height: 20
   },
   countryName: {
     fontSize: getHeightPercent(2.2)
@@ -76,7 +77,7 @@ export default StyleSheet.create({
     marginRight: 10,
     backgroundColor: 'transparent',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-end'
   },
   letter: {
     height: 25,

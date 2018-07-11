@@ -84,6 +84,8 @@ export default class CountryPicker extends Component {
     disabled: PropTypes.bool,
     filterPlaceholderTextColor: PropTypes.string,
     closeButtonImage: PropTypes.element,
+    ModalComp: PropTypes.any,
+    modalContentStyle: PropTypes.any,
     transparent: PropTypes.bool,
     animationType: PropTypes.oneOf(['slide', 'fade', 'none']),
     flagType: PropTypes.oneOf(Object.values(FLAG_TYPES)),
@@ -100,7 +102,8 @@ export default class CountryPicker extends Component {
     filterPlaceholder: 'Filter',
     autoFocusFilter: true,
     transparent: false,
-    animationType: 'none'
+    animationType: 'slide',
+    ModalComp: Modal
   }
 
   static renderEmojiFlag(cca2, emojiStyle) {
@@ -375,6 +378,8 @@ export default class CountryPicker extends Component {
   }
 
   render() {
+    const { ModalComp, modalContentStyle } = this.props;
+
     return (
       <View style={styles.container}>
         <TouchableOpacity
@@ -392,11 +397,12 @@ export default class CountryPicker extends Component {
             </View>
           )}
         </TouchableOpacity>
-        <Modal
+        <ModalComp
           transparent={this.props.transparent}
           animationType={this.props.animationType}
           visible={this.state.modalVisible}
           onRequestClose={() => this.setState({ modalVisible: false })}
+          style={modalContentStyle}
         >
           <SafeAreaView style={styles.modalContainer}>
             <View style={styles.header}>
@@ -425,6 +431,7 @@ export default class CountryPicker extends Component {
                 />
                 {!this.props.hideAlphabetFilter && (
                   <ScrollView
+                    style={{ maxWidth: 80 }}
                     contentContainerStyle={styles.letters}
                     keyboardShouldPersistTaps="always"
                   >
@@ -437,7 +444,7 @@ export default class CountryPicker extends Component {
               </View>
             </KeyboardAvoidingView>
           </SafeAreaView>
-        </Modal>
+        </ModalComp>
       </View>
     )
   }
