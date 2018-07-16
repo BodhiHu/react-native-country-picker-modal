@@ -85,6 +85,7 @@ export default class CountryPicker extends Component {
     filterPlaceholderTextColor: PropTypes.string,
     closeButtonImage: PropTypes.element,
     ModalComp: PropTypes.any,
+    ModalCompProps: PropTypes.object,
     modalContentStyle: PropTypes.any,
     transparent: PropTypes.bool,
     animationType: PropTypes.oneOf(['slide', 'fade', 'none']),
@@ -378,7 +379,7 @@ export default class CountryPicker extends Component {
   }
 
   render() {
-    const { ModalComp, modalContentStyle } = this.props;
+    const { ModalComp, ModalCompProps, modalContentStyle } = this.props;
 
     return (
       <View style={styles.container}>
@@ -403,6 +404,7 @@ export default class CountryPicker extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => this.setState({ modalVisible: false })}
           style={modalContentStyle}
+          {...ModalCompProps}
         >
           <SafeAreaView style={styles.modalContainer}>
             <View style={styles.header}>
