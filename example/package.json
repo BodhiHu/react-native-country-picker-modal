@@ -1,5 +1,5 @@
 {
-  "name": "example",
+  "name": "react-native-country-picker-modal-example",
   "version": "0.0.0",
   "description": "Hello Expo!",
   "author":
@@ -9,9 +9,7 @@
   "dependencies": {
     "expo": "^23.0.0",
     "react": "16.0.0",
-    "react-native":
-      "https://github.com/expo/react-native/archive/sdk-23.0.0.tar.gz",
-    "react-native-country-picker-modal":
-      "https://github.com/xcarpentier/react-native-country-picker-modal.git"
+    "react-native": "^0.56.1",
+    "react-native-country-picker-modal": "../"
   }
 }
